@@ -3,9 +3,12 @@ package org.javaboy.vhr.service;
 import org.apache.ibatis.annotations.Param;
 import org.javaboy.vhr.mapper.EmployeeMapper;
 import org.javaboy.vhr.model.Employee;
+import org.javaboy.vhr.model.MailConstants;
+import org.javaboy.vhr.model.MailSendLog;
 import org.javaboy.vhr.model.RespPageBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class EmployeeService {
@@ -21,6 +25,8 @@ public class EmployeeService {
     EmployeeMapper employeeMapper;
     @Autowired
     RabbitTemplate rabbitTemplate;
+    @Autowired
+    MailSendLogService mailSendLogService;
     public final static Logger logger = LoggerFactory.getLogger(EmployeeService.class);
     //public List<Employee> getEmpSalary(){return employeeMapper.getEmpSalary();}
    //public List<Employee> getSalaryByMonth(){return employeeMapper.getSalaryByMonth();}
@@ -52,8 +58,17 @@ public class EmployeeService {
          */
         if (result == 1) {
             Employee emp = employeeMapper.getEmployeeById(employee.getId());
+            String msgId= UUID.randomUUID().toString();
+            MailSendLog mailSendLog=new MailSendLog();
+            mailSendLog.setMsgId(msgId);
+            mailSendLog.setCreateTime(new Date());
+            mailSendLog.setExchange(MailConstants.MAIL_EXCHANGE_NAME);
+            mailSendLog.setRouteKey(MailConstants.MAIL_ROUTINGKEY_NAME);
+            mailSendLog.setEmpId(emp.getId());
+            mailSendLog.setTryTime(new Date(System.currentTimeMillis()+1000*60*MailConstants.MSG_TIMEOUT));
+            mailSendLogService.insertMailSendLog(mailSendLog);
             logger.info(emp.toString());
-            rabbitTemplate.convertAndSend("javaboy.mail.welcome", emp);
+            rabbitTemplate.convertAndSend(MailConstants.MAIL_EXCHANGE_NAME,MailConstants.MAIL_ROUTINGKEY_NAME,emp,new CorrelationData(msgId));
         }
         return result;
     }
@@ -146,5 +161,8 @@ public class EmployeeService {
     }
     public Integer updateEmployeeSalaryById(Integer eid, Integer sid) {
         return employeeMapper.updateEmployeeSalaryById(eid,sid);
+    }
+    public Employee getEmployeeById(Integer empId){
+        return employeeMapper.getEmployeeById(empId);
     }
 }

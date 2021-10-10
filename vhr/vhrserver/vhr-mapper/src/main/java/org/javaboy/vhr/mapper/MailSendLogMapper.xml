@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.javaboy.vhr.mapper.MailSendLogMapper">
+    <resultMap id="BaseResultMap" type="org.javaboy.vhr.model.MailSendLog">
+        <id column="id" property="id" jdbcType="INTEGER"></id>
+        <result column="msgId" property="msgId" jdbcType="VARCHAR"></result>
+        <result column="empId" property="empId" jdbcType="INTEGER"></result>
+        <result column="status" property="status" jdbcType="INTEGER"></result>
+        <result column="routekey" property="routeKey" jdbcType="VARCHAR"></result>
+        <result column="exchange" property="exchange" jdbcType="VARCHAR"></result>
+        <result column="count" property="count" jdbcType="INTEGER"></result>
+        <result column="tryTime" property="tryTime" jdbcType="DATE"></result>
+        <result column="createTime" property="createTime" jdbcType="DATE"></result>
+        <result column="updateTime" property="updateTime" jdbcType="DATE"></result>
+    </resultMap>
+    <update id="updateMailSendStatus">
+        update mail_send_log
+        set status=#{status}
+        where msgId=#{msgId}
+    </update>
+    <insert id="insertMailSendLog" parameterType="org.javaboy.vhr.model.MailSendLog">
+        insert into mail_send_log (id,empId,msgId,status,routeKey,exchange,count,tryTime,createTime,updateTime)
+        values (#{id},#{empId},#{msgId},#{status},#{routeKey},#{exchange},#{count},#{tryTime},#{createTime},#{updateTime})
+    </insert>
+    <select id="getMailSendLogsByStatus">
+        select id,empId,msgId,status,routeKey,exchange,count,tryTime,createTime,updateTime
+        from mail_send_log
+        where status=0 and tryTime.sysdate();
+    </select>
+    <update id="updateCount">
+        update mail_send_log
+        set count=count+1,updateTime=#{date}
+        where msgId=#{msgId}
+    </update>
+</mapper>
