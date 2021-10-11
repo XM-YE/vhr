@@ -20,12 +20,12 @@
     </update>
     <insert id="insertMailSendLog" parameterType="org.javaboy.vhr.model.MailSendLog">
         insert into mail_send_log (id,empId,msgId,status,routeKey,exchange,count,tryTime,createTime,updateTime)
-        values (#{id},#{empId},#{msgId},#{status},#{routeKey},#{exchange},#{count},#{tryTime},#{createTime},#{updateTime})
+        values (#{id},#{empId},#{msgId},0,#{routeKey},#{exchange},#{count},#{tryTime},#{createTime},#{updateTime})
     </insert>
     <select id="getMailSendLogsByStatus">
         select id,empId,msgId,status,routeKey,exchange,count,tryTime,createTime,updateTime
         from mail_send_log
-        where status=0 and tryTime.sysdate();
+        where status=0 and tryTime &lt; sysdate()
     </select>
     <update id="updateCount">
         update mail_send_log
