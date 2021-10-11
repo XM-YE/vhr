@@ -32,7 +32,7 @@ public class MailSendTask {
             return;
         }
         logs.forEach(mailSendLog->{
-            if (mailSendLog.getCount()>3){
+            if (mailSendLog.getCount()>=3){
                 mailSendLogService.updateMailSendStatus(mailSendLog.getMsgId(),2);
             }else {
                 mailSendLogService.updateCount(mailSendLog.getMsgId(),new Date());
