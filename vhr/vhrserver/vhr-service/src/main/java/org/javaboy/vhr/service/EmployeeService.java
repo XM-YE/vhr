@@ -68,7 +68,7 @@ public class EmployeeService {
             mailSendLog.setTryTime(new Date(System.currentTimeMillis()+1000*60*MailConstants.MSG_TIMEOUT));
             mailSendLogService.insertMailSendLog(mailSendLog);
             logger.info(emp.toString());
-            rabbitTemplate.convertAndSend(MailConstants.MAIL_EXCHANGE_NAME,MailConstants.MAIL_ROUTINGKEY_NAME,emp,new CorrelationData(msgId));
+            rabbitTemplate.convertAndSend(MailConstants.MAIL_EXCHANGE_NAME,MailConstants.MAIL_ROUTINGKEY_NAME,emp,new CorrelationData(mailSendLog.getMsgId()));
         }
         return result;
     }

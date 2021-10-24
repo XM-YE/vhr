@@ -1,6 +1,5 @@
 package org.javaboy.mailserver.receiver;
 
-
 import com.rabbitmq.client.Channel;
 import org.javaboy.vhr.model.Employee;
 import org.javaboy.vhr.model.MailConstants;
@@ -40,14 +39,14 @@ public class MailReceiver {
 
     @RabbitListener(queues=MailConstants.MAIL_QUEUE_NAME)
     public void handler(Message message, Channel channel) throws IOException {
-        Employee employee=(Employee) message.getPayload();
-        MessageHeaders messageHeaders=message.getHeaders();
-        Long tag=(Long) messageHeaders.get(AmqpHeaders.DELIVERY_TAG);
-        String msgId=(String)messageHeaders.get("spring_returned_message_correlation");
-        if(redisTemplate.opsForHash().entries("mail_log").containsKey(msgId)){
+        Employee employee = (Employee) message.getPayload();
+        MessageHeaders headers = message.getHeaders();
+        Long tag = (Long) headers.get(AmqpHeaders.DELIVERY_TAG);
+        String msgId = (String) headers.get("spring_returned_message_correlation");
+        if (redisTemplate.opsForHash().entries("mail_log").containsKey(msgId)) {
             //redis 中包含该 key，说明该消息已经被消费过
-            logger.info(msgId+":消息已被消费！");
-            channel.basicAck(tag,false);
+            logger.info(msgId + ":消息已经被消费");
+            channel.basicAck(tag, false);
             return;
         }
         //收到消息，发送邮件
@@ -70,13 +69,13 @@ public class MailReceiver {
             String mail = templateEngine.process("mail", context);
             helper.setText(mail, true);
             javaMailSender.send(msg);
-            redisTemplate.opsForHash().put("mail_log","msgId","javaboy");
-            channel.basicAck(tag,false);
-            logger.info(msgId+":邮件发送成功！");
+            redisTemplate.opsForHash().put("mail_log", "msgId", "javaboy");
+            channel.basicAck(tag, false);
+            logger.info(msgId + ":邮件发送成功");
         } catch (MessagingException e) {
-            channel.basicNack(tag,false,true);
+            channel.basicNack(tag, false, true);
             e.printStackTrace();
-            logger.error("邮件发送失败："+e.getMessage());
+            logger.error("邮件发送失败：" + e.getMessage());
         }
     }
 }

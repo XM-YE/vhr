@@ -4,10 +4,7 @@ import org.javaboy.vhr.model.MailConstants;
 import org.javaboy.vhr.service.MailSendLogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +22,6 @@ public class RabbitConfig {
     RabbitTemplate rabbitTemplate(){
         RabbitTemplate rabbitTemplate=new RabbitTemplate(cachingConnectionFactory);
         rabbitTemplate.setConfirmCallback((data, ack, cause) -> {
-            assert data != null;
             String msgId=data.getId();
             if(ack){
                 /*
@@ -35,11 +31,16 @@ public class RabbitConfig {
                 mailSendLogService.updateMailSendStatus(msgId,1);
             }else {
                 logger.info(msgId+":消息发送失败！");
+                logger.info("失败原因:"+cause);
             }
         });
-        rabbitTemplate.setReturnCallback((msgId,repCode,repText,exchange,routingkey)->{
-            logger.info("消息发送失败！");
+        rabbitTemplate.setReturnsCallback((msgId)->{
+            logger.info("消息发送失败！"+msgId);
         });
+        /*
+        rabbitTemplate.setReturnCallback((msgId,repCode,repText,exchange,routingKey)->{
+            logger.info("消息发送失败！");
+        });*/
         return rabbitTemplate;
     }
     @Bean

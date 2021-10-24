@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class MailSendTask {
@@ -32,7 +33,7 @@ public class MailSendTask {
             return;
         }
         logs.forEach(mailSendLog->{
-            if (mailSendLog.getCount()>=3){
+            if (mailSendLog.getCount()>=3 && mailSendLog.getStatus()==0){
                 mailSendLogService.updateMailSendStatus(mailSendLog.getMsgId(),2);
             }else {
                 mailSendLogService.updateCount(mailSendLog.getMsgId(),new Date());

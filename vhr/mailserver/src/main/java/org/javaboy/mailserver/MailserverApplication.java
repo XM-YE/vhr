@@ -4,6 +4,7 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.javaboy.vhr.model.MailConstants;
 
 @SpringBootApplication
 public class MailserverApplication {
@@ -14,6 +15,6 @@ public class MailserverApplication {
 
     @Bean
     Queue queue() {
-        return new Queue("javaboy.mail.welcome");
+        return new Queue(MailConstants.MAIL_QUEUE_NAME);
     }
 }
