@@ -25,7 +25,7 @@ public class OpLogAspect {
     @Pointcut("@annotation(org.javaboy.vhr.config.OpLogConfig)")
     public void operationlog(){ }
     @AfterReturning("operationlog()")
-    public void addOpLog(JoinPoint joinPoint) throws Exception{
+    public void addOpLog(JoinPoint joinPoint) {
         OpLog opLog=new OpLog();
         MethodSignature signature=(MethodSignature)joinPoint.getSignature();
         Method method=signature.getMethod();
