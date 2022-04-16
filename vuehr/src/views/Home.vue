@@ -74,7 +74,7 @@
                         type: 'warning'
                     }).then(() => {
                         this.getRequest("/logout");
-                        window.sessionStorage.removeItem("user")
+                        window.sessionStorage.removeItem("user");
                         this.$store.commit('initRoutes', []);
                         this.$router.replace("/");
                     }).catch(() => {
@@ -83,7 +83,7 @@
                             message: '已取消操作'
                         });
                     });
-                }else if (cmd===userinfo){
+                }else if (cmd==='userinfo'){
                     this.$router.push('/hrinfo');
                 }
             }

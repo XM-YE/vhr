@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 public class Hr implements UserDetails {
     private Integer id;
@@ -33,6 +34,22 @@ public class Hr implements UserDetails {
     private List<Role> roles;
 
     private OpLog oplog;
+
+
+    @Override
+    public boolean equals(Object o){
+        if(this==o)return true;
+        if(o==null||getClass()!=o.getClass()) return false;
+        Hr hr=(Hr) o;
+        return Objects.equals(username,hr.username);
+    }
+    @Override
+    public int hashCode(){
+        return Objects.hash(username);
+    }
+    public Hr(){
+
+    }
 
     public OpLog getOplog() {
         return oplog;

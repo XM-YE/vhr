@@ -16,7 +16,7 @@ public class FastDFSUtils {
     public static StorageClient1 client1;
     static {
         try {
-            ClientGlobal.initByProperties("fastdsf-client.properties");
+            ClientGlobal.initByProperties("fastdfs-client.properties");
             TrackerClient trackerClient=new TrackerClient();
             TrackerServer trackerServer=trackerClient.getConnection();
             client1=new StorageClient1(trackerServer,null);
@@ -28,7 +28,7 @@ public class FastDFSUtils {
         String oldName=multipartFile.getOriginalFilename();
         try {
             /*
-             *lastIndexOf(".")截取.之前的元素
+             *截取文件名.之前的元素
              */
             return client1.upload_file1(multipartFile.getBytes(),oldName.substring(oldName.lastIndexOf(".")+1),null);
         }catch (IOException | MyException e){

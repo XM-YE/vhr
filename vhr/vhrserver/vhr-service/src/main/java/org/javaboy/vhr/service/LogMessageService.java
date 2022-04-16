@@ -16,6 +16,7 @@ public class LogMessageService {
      public int insert(OpLog record){
         return opLogMapper.insert(record);
     }
+
 }
 
 

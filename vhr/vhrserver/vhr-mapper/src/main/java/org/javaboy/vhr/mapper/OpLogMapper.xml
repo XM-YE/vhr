@@ -25,8 +25,21 @@
   </resultMap>
 
   <select id="getAllLogMessage" resultMap="hrwithlogmessage">
-    select h.name as hname,op.operate,op.addDate ,op.hrid as hrid,op.hrname as hrname,op.operatemethod as operatemethod
+    select h.name as hname,op.operate,op.addDate ,op.hrid as hrid,op.hrname as hrname,op.operatemethod as operatemethod,op.id as id
     from oplog op join hr h on op.hrid=h.id
+    <if test="page!=null and size!=null ">
+    limit #{page},#{size}
+    </if>
+  </select>
+  <select id="getTotal" resultType="java.lang.Long">
+    select count(*) from oplog op
+     <where>
+     <if test="oplog!=null ">
+      <if test="oplog.hrid!=null ">
+        and op.hrid like concat('%',#{oplog.hrid},'%')
+      </if>
+     </if>
+    </where>
   </select>
 
   <sql id="Base_Column_List" >
@@ -40,7 +53,7 @@
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from oplog
-    where hrid = #{hrid,jdbcType=INTEGER}
+    where id = #{hrid,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="org.javaboy.vhr.model.OpLog" >
     insert into oplog (id, addDate, operate, hrid,hrname,operatemethod)

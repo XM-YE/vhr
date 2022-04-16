@@ -48,6 +48,7 @@ public class Employee implements Serializable {
                 ", department=" + department +
                 ", jobLevel=" + jobLevel +
                 ", position=" + position +
+                ", keyword="  + keyword +
                 '}';
     }
 
@@ -112,6 +113,16 @@ public class Employee implements Serializable {
     private JobLevel jobLevel;
     private Position position;
     private Salary salary;
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
+
+    private String keyword;
 
     public Salary getSalary() {
         return salary;

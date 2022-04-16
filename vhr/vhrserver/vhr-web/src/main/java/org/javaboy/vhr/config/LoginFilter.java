@@ -23,7 +23,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     SessionRegistry sessionRegistry;
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationServiceException {
-        if(!request.getMethod().equals("post")){
+        if(!request.getMethod().equals("POST")){
            throw new AuthenticationServiceException("Authencation method not supported:"+request.getMethod());
         }
         String verify_code=(String)request.getSession().getAttribute("verify_code");

@@ -1,4 +1,6 @@
 package org.javaboy.vhr.controller.system.basic;
+import org.javaboy.vhr.model.OpLog;
+import org.javaboy.vhr.model.RespPageBean;
 import org.javaboy.vhr.service.HrService;
 import org.javaboy.vhr.service.LogMessageService;
 import org.javaboy.vhr.model.Hr;
@@ -14,8 +16,8 @@ public class LogMessageController {
     @Autowired
     HrService hrService;
     @GetMapping("/")
-    public List<Hr> getAllLogMessage(){
-        return hrService.getAllLogMessage();
+    public RespPageBean getAllLogMessage(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10")Integer size, OpLog oplog){
+        return hrService.getAllLogMessage(page,size,oplog);
     }
     @Autowired
     LogMessageService logMessageService;

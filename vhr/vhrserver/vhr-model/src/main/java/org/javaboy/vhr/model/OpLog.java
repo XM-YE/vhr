@@ -27,13 +27,12 @@ public class OpLog {
         this.operatemethod = operatemethod;
     }
 
-
-    /*
     private Hr hr;
+
     public Hr getHr() { return hr; }
 
     public void setHr(Hr hr) { this.hr = hr; }
-    */
+
     public Integer getId() {
         return id;
     }

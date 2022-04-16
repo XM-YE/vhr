@@ -2,7 +2,11 @@ package org.javaboy.vhr.service;
 
 import org.javaboy.vhr.mapper.HrMapper;
 import org.javaboy.vhr.mapper.HrRoleMapper;
+import org.javaboy.vhr.mapper.OpLogMapper;
+import org.javaboy.vhr.model.Employee;
 import org.javaboy.vhr.model.Hr;
+import org.javaboy.vhr.model.OpLog;
+import org.javaboy.vhr.model.RespPageBean;
 import org.javaboy.vhr.utils.HrUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +25,8 @@ public class HrService implements UserDetailsService {
     HrMapper hrMapper;
     @Autowired
     HrRoleMapper hrRoleMapper;
+    @Autowired
+    OpLogMapper opLogMapper;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -74,8 +80,17 @@ public class HrService implements UserDetailsService {
     public Integer updateUserface(String url, Integer id) {
         return hrMapper.updateUserface(url, id);
     }
-    public List<Hr> getAllLogMessage(){
-        return hrMapper.getAllLogMessage();
+
+    public RespPageBean getAllLogMessage(Integer page, Integer size, OpLog oplog){
+        if (page != null && size != null) {
+            page = (page - 1) * size;
+        }
+        List<OpLog> data = opLogMapper.getAllLogMessage(page,size,oplog);
+        Long total = opLogMapper.getTotal(oplog);
+        RespPageBean bean = new RespPageBean();
+        bean.setData(data);
+        bean.setTotal(total);
+        return bean;
     }
 
 }

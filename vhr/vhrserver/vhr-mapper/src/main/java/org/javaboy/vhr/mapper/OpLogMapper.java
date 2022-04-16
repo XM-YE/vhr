@@ -1,6 +1,10 @@
 package org.javaboy.vhr.mapper;
 
+import org.apache.ibatis.annotations.Param;
+import org.javaboy.vhr.model.Employee;
 import org.javaboy.vhr.model.OpLog;
+
+import java.util.Date;
 import java.util.List;
 
 public interface OpLogMapper {
@@ -15,5 +19,8 @@ public interface OpLogMapper {
     int updateByPrimaryKeySelective(OpLog record);
 
     int updateByPrimaryKey(OpLog record);
-    List<OpLog>getAllLogMessage();
+
+    List<OpLog>getAllLogMessage(@Param("page")Integer page,@Param("size")Integer size,@Param("oplog") OpLog oplog);
+
+    Long getTotal(@Param("oplog") OpLog oplog);
 }
